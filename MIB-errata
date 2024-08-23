@@ -1,0 +1,53 @@
+w******n@n**.****f.net
+21/06/1992 14:16:24 UTC
+
+Sorry world but I changed the MIB compiler software just before sending
+
+it out. I tried to add a few more comments to it. As a result I was told
+
+that I "fixed" something. As a result the following code in AssignOBJECT.c
+
+is incorrect:
+
+void ProcessObject(char *pName,TYPE *pSyntax,int Access,int Status,
+
+> char *pDesc,char *pRef,LIST *pIndex,LIST *pDefault,
+
+> LIST *pOID,int nLineNo,int bSaveOI
+
+D)
+
+> {
+
+> LIST *pNew;
+
+> /*
+
+> * See if the OID supplied can be converted to only numbers, such as
+
+> * 1.3.6
+
+> */
+
+> *pNew = ResolveSpecificOID(pOID,pName,0);
+
+^
+
+|
+
+|
+
+|
+
+The statement *pNew = ResolveSpecificOID(), should be
+
+pNew = ResolveSpecificOID(...)
+
+Please forgive the mistake, I am humbled. Many thanks to the people
+
+that found it and told me about it. I should always remember to not
+
+fix anything which isn't broken!
+
+A very humbled, Chuck Wegrzyn
+
