@@ -6,48 +6,31 @@ Introduction
 
 
 This is a MIB compiler that will read and parse MIBs according to
-
 RFC-1212, Definition of a Concise MIB. It will also handle trap
-
 definitions if they are included (see RFC-1213 for the trap stuff).
 
 
-
 I release the code with no warranty and copyright -- I place it in
-
 the public domain. Please honor my intentions by not placing a
-
 restrictive copyright on it -- specifically the GNU copyleft statement
-
 or any others.
 
 
-
 Like all software, it probably has bugs in it. I have tried my best
-
 to find them and fix them. This software is a small part of the
-
 Motorola Codex SNMP Mgr. software which I wrote, and has been
-
 operational for the last year and one-half. The compiler has been
-
 used on just about every MIB placed on venera.isi.edu, and appears
-
 to work. But, that said I am sure that there are bugs in there
-
 somewhere. If you do find a problem or bug, please send me mail
+at
 
-at  mibcompiler@garbagedump.com
-
-
+            mibcompiler@garbagedump.com
 
 
 and I will try my best to fix the problem. If you make any changes
-
 I would appreciate receiving any changes. I will integrate them into
-
 the system and re-issue the software. Of course, you can make any
-
 changes you wish and post them as well.
 
 
@@ -57,34 +40,18 @@ Building the system
 -------------------
 
 For some information about building the software. There is a MAKE
-
 file called Makefile, that can be used to build the system. If you
-
 examine Makefile you will find that CFLAGS has two possible formats:
-
 one for stdarg.h and the other for using varargs.h ... pick which
-
 ever is appropriate. The software has been tested on a number of
-
 5.4 systems and works. It has also been ported to HP/UX and works.
 
-
-
 After the program is built, you can call it MIBcompiler or MIBcheck.
-
 If the name MIBcheck is used, it will do a syntax/semantic check of
-
 the MIB put will not ever call any database routines. If it is called
-
 MIBcompiler, it will do the syntax/semantic check and possibly call
-
 the database routines. A Mib is defined to have an extension of .my,
-
 but can really be anything.
-
-
-
-
 
 
 
@@ -95,79 +62,44 @@ Some Internal stuff
 
 
 There are a number of statements allowed in a MIB. I will discuss each
-
 briefly and tell you how each statement is processed.
 
-
+git comm
 
 There is an OID definition, that looks something like:
 
-
-
  cisco OBJECT IDENTIFIER ::= { enterprises 9 }
 
-
-
 This statement is processed by a routine called ProcessOID() in the
-
 file AssignOID.c.
 
 
 
 Another file is a TYPE definition, which looks something like:
 
-
-
  LIfEntry ::=
-
- SEQUENCE {
-
- locIfLastIn
-
- INTEGER,
-
- locIfDelay
-
- INTEGER,
-
- locIfOutputQueueDrops
-
- INTEGER
-
- }
-
+        SEQUENCE {
+            locIfLastIn INTEGER,
+            locIfDelay INTEGER,
+            locIfOutputQueueDrops INTEGER
+        }
 
 
 This statement, after parsing, is processed by routine ProcessType()
-
 in file AssignTYPE.c
-
-
 
 The actual object definition, of which
 
-
-
  ifEntry OBJECT-TYPE
 
- SYNTAX IfEntry
-
- ACCESS not-accessible
-
- STATUS mandatory
-
- DESCRIPTION
-
- "An interface entry containing objects at the
-
- subnetwork layer and below for a particular
-
- interface."
-
- INDEX { ifIndex }
-
- ::= { ifTable 1 }
-
+        SYNTAX IfEntry
+        ACCESS not-accessible
+        STATUS mandatory
+        DESCRIPTION
+                "An interface entry containing objects at the
+                subnetwork layer and below for a particular
+                interface."
+        INDEX { ifIndex } ::= { ifTable 1 }
 
 
 is an example, is processed by routine ProcessObject() in file AssignOBJECT.c.
@@ -175,60 +107,31 @@ is an example, is processed by routine ProcessObject() in file AssignOBJECT.c.
 
 
 Finally, trap statements are processed by routine ProcessTrap() in file
-
 AssignTRAP.c. An example of a trap statement is
 
 
-
- coldStart TRAP-TYPE
-
- ENTERPRISE {snmp}
-
- DESCRIPTION "Cold start of the machine"
-
- ::= {1}
-
+        coldStart TRAP-TYPE
+            ENTERPRISE {snmp}
+            DESCRIPTION "Cold start of the machine"
+        ::= {1}
 
 
 
 
 The overall flow is that the system will run in up to two passes: all
-
 OIDs and symbols that can be resolved in the first pass are processed
-
 in the first pass. Anything that requires two passes is processed in
-
 the second pass. Basically, if you define something before it is used,
-
 the "thing" that uses it will be processed in the first pass. Something
-
 that is used before it is defined, will be processed in the second
-
 pass.
 
 
 
 In processing OIDs and TYPE statements, a linked list is kept and passed
-
 to the various routines.
 
 
-
-
-
 One last note -- I have tried to comment the code with meaningful
-
 information. I hope that I have succeeded....
-
-
-
-Sincerely, Chuck Wegrzyn
-
-
-
-
-
-
-
-
 
